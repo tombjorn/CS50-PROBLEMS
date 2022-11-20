@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <cs50.h>
+
+int keyCheck(char arr1[], int ln);
+
+int main(int argc, char *argv[])
+{
+    // printf("Hello\n");
+
+
+    if (argc != 2)
+    {
+        printf("Failed : Usage: ./substitution key\n");
+        return 1;
+    }
+    // !printf("Passed : No. of arguments\n");
+
+    int length = strlen(argv[1]);
+
+//TODO FIX SYMBOL ISSUE W/ KEYCHECK
+    if (keyCheck(argv[1], length) != 0)
+    {
+        printf("Failed : Key Check\n");
+        return 1;
+    }
+
+//+ convert key to ascii string
+    char key[26] = {0};
+    char temp[26] = {0};
+
+    for (int i = 0; i < 26; i++)
+    {
+        if (isupper(argv[1][i]))
+        {
+            temp[i] = argv[1][i];
+            key[i] = (toascii(temp[i]) - 65);
+            printf("|%i|", key[i]);
+        }
+        else
+        {
+            temp[i] = argv[1][i];
+            key[i] = (toascii(temp[i]) - 97);
+            printf("|%i|", key[i]);
+        }
+    }
+    printf("\n");
+
+// get user input
+    string input = get_string("plaintext: ");
+    int inLn = strlen(input);
+
+    printf("ciphertext: ");
+    int w;
+//+ convert input to ascii string, then implement key
+//* then then sets the outout array to that number of the key index
+    for (int j = 0; j < inLn; j++)
+    {
+        if (isupper(input[j]))
+        {
+            w = (toascii(input[j]) - 65);
+            printf("%c", key[w] + 65);
+        }
+        else if (islower(input[j]))
+        {
+            w = (toascii(input[j]) - 97);
+            printf("%c", key[w] + 97);
+        }
+        else
+        {
+            printf("%c", input[j]);
+        }
+    }
+    printf("\n");
+
+    return 0;
+
+}
+
+int keyCheck(char arr1[], int ln)
+{
+
+    int n = ln;
+//checks length of key
+    if (n != 26)
+    {
+        printf("Failed : Key must contain 26 letters\n");
+        return 1;
+    }
+
+
+    for (int i = 0; i < n; i++)
+    {
+        // ! FAILS WITH SYMBOLS
+        if (isalpha(arr1[i]) == 0)
+        {
+            printf("Failed : Key must only contain letters\n");
+            return 1;
+        }
+    }
+
+    int counter[26] = {0};
+
+    for (int j = 0; j < n; j++)
+    {
+        //some cool stuff to assign each letter of key to the index of a counter arr
+        int y = 0;
+
+        if (islower(arr1[j]))
+        {
+            y = toascii(arr1[j]) - 97;
+            counter[y] ++;
+        }
+        else if (isupper(arr1[j]))
+        {
+            y = toascii(arr1[j]) - 65;
+            counter[y] ++;
+        }
+    }
+
+    //+ count the sum of counters
+    for (int k = 0; k < n; k++)
+    {
+
+        if (counter[k] != 1)
+        {
+            printf("Key must not contain repeated letters\n");
+            return 1;
+        }
+    }
+    // retunrs if all checks passed
+    return 0;
+
+}
+
+
